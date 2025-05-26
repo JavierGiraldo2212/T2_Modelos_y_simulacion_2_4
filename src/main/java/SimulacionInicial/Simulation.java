@@ -1,3 +1,5 @@
+package SimulacionInicial;
+
 import SimLib.*;
 
 import java.util.PriorityQueue;
@@ -28,6 +30,15 @@ public class Simulation {
     // Constructor
     public Simulation() {
         eventList = new PriorityQueue<>(Comparator.comparingDouble(e -> e.time));
+
+        // Inicializar generadores aleatorios con semillas basadas en el tiempo actual
+
+        /*long semillaBase = System.currentTimeMillis();
+        Random.randst(semillaBase % 2147483647, 1);          // Para llegadas de clientes
+        Random.randst((semillaBase + 123) % 2147483647, 2);  // Para llegadas de llamadas
+        Random.randst((semillaBase + 456) % 2147483647, 3);  // Para servicios de clientes
+        Random.randst((semillaBase + 789) % 2147483647, 4);  // Para servicios de llamadas
+        */
         // Programar primeras llegadas
         scheduleEvent(new Event(EventType.CLIENT_ARRIVAL, 2));
         scheduleEvent(new Event(EventType.CALL_ARRIVAL, 3));
@@ -170,7 +181,5 @@ public class Simulation {
         int [] empleadoOcupado = sim.registroEstado.obtenerEmpleadoOcupado();
         // Mostrar dashboard con gráficos
         new GraficosCombinados().mostrarDashboard(sim);
-
     }
-
 }

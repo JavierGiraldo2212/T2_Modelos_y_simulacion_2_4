@@ -1,3 +1,5 @@
+package SimulacionMejorada;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -5,21 +7,25 @@ public class RegistroEstado {
     public List<Double> tiempo;
     public List<Integer> clientesEnCola;
     public List<Integer> llamadasEnCola;
-    public List<Integer> empleadoOcupado; // 0 o 1
+    public List<Integer> empleado1Ocupado; // 0 o 1
+    public List<Integer> empleado2Ocupado; // 0 o 1
+
 
     public RegistroEstado() {
         this.tiempo = new ArrayList<>();
         this.clientesEnCola = new ArrayList<>();
         this.llamadasEnCola = new ArrayList<>();
-        this.empleadoOcupado = new ArrayList<>();
+        this.empleado1Ocupado = new ArrayList<>();
+        this.empleado2Ocupado = new ArrayList<>();
     }
 
 
-    public void Add_estado(double tiempo, int clientesEnCola, int llamadasEnCola, int empleadoOcupado) {
+    public void Add_estado(double tiempo, int clientesEnCola, int llamadasEnCola, int empleado1Ocupado, int empleado2Ocupado) {
         this.tiempo.add(tiempo);
         this.clientesEnCola.add(clientesEnCola);
         this.llamadasEnCola.add(llamadasEnCola);
-        this.empleadoOcupado.add(empleadoOcupado);
+        this.empleado1Ocupado.add(empleado1Ocupado);
+        this.empleado2Ocupado.add(empleado2Ocupado);
     }
 
     public double[] obtenerTiempos() {
@@ -43,12 +49,19 @@ public class RegistroEstado {
         }
         return llamadas;
     }
-    public int[] obtenerEmpleadoOcupado() {
-        int[] ocupado = new int[empleadoOcupado.size()];
-        for (int i = 0; i < empleadoOcupado.size(); i++) {
-            ocupado[i] = empleadoOcupado.get(i);
+    public int[] obtenerEmpleado1Ocupado() {
+        int[] ocupado = new int[empleado1Ocupado.size()];
+        for (int i = 0; i < empleado1Ocupado.size(); i++) {
+            ocupado[i] = empleado1Ocupado.get(i);
+        }
+        return ocupado;
+    }
+
+    public int[] obtenerEmpleado2Ocupado() {
+        int[] ocupado = new int[empleado2Ocupado.size()];
+        for (int i = 0; i < empleado2Ocupado.size(); i++) {
+            ocupado[i] = empleado2Ocupado.get(i);
         }
         return ocupado;
     }
 }
-

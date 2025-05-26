@@ -1,3 +1,5 @@
+package SimulacionMejorada;
+
 import org.jfree.chart.*;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.*;
@@ -10,68 +12,63 @@ import java.awt.geom.*;
 
 public class GraficosCombinados {
 
-    public void mostrarDashboard(Simulation sim) {
+    public void mostrarDashboard(NewSimulation sim) {
         // Obtener datos de la simulación
         double[] tiempos = sim.registroEstado.obtenerTiempos();
         int[] clientesEnCola = sim.registroEstado.obtenerClientesEnCola();
         int[] llamadasEnCola = sim.registroEstado.obtenerLlamadasEnCola();
-        int[] empleadoOcupado = sim.registroEstado.obtenerEmpleadoOcupado();
+        int[] empleado1Ocupado = sim.registroEstado.obtenerEmpleado1Ocupado();
+        int[] empleado2Ocupado = sim.registroEstado.obtenerEmpleado2Ocupado();
 
-        // Configurar ventana principal
         JFrame ventana = new JFrame("Dashboard de Simulación de Colas");
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ventana.setSize(1200, 800);
         ventana.setLocationRelativeTo(null);
 
-        // Crear panel con pestañas
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // 1. Pestaña de Evolución de Colas
-        tabbedPane.addTab("Evolución Colas", crearPanelEvolucionColas(tiempos, clientesEnCola, llamadasEnCola));
-
-        // 2. Pestaña de Ocupación de Empleado
-        tabbedPane.addTab("Ocupación Empleado", crearPanelOcupacionEmpleado(tiempos, empleadoOcupado));
-
+        // Paneles separados
+        tabbedPane.addTab("Cola Clientes", crearPanelClientesEnCola(tiempos, clientesEnCola));
+        tabbedPane.addTab("Cola Llamadas", crearPanelLlamadasEnCola(tiempos, llamadasEnCola));
+        tabbedPane.addTab("Ocupación Empleado 1", crearPanelOcupacionEmpleado(tiempos, empleado1Ocupado, "Empleado 1"));
+        tabbedPane.addTab("Ocupación Empleado 2", crearPanelOcupacionEmpleado(tiempos, empleado2Ocupado, "Empleado 2"));
 
         ventana.add(tabbedPane);
         ventana.setVisible(true);
     }
 
-    private JPanel crearPanelEvolucionColas(double[] tiempos, int[] clientes, int[] llamadas) {
+    private JPanel crearPanelClientesEnCola(double[] tiempos, int[] clientes) {
         XYSeries serieClientes = new XYSeries("Clientes en persona");
-        XYSeries serieLlamadas = new XYSeries("Llamadas");
 
         for (int i = 0; i < tiempos.length; i++) {
             serieClientes.add(tiempos[i], clientes[i]);
-            serieLlamadas.add(tiempos[i], llamadas[i]);
         }
 
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(serieClientes);
-        dataset.addSeries(serieLlamadas);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Evolución de las Colas en el Tiempo",
+                "Evolución de Clientes en Cola",
                 "Tiempo (minutos)",
-                "Número en Cola",
+                "Número de Clientes",
                 dataset
         );
 
-        // Personalización del gráfico
         XYPlot plot = chart.getXYPlot();
         plot.setBackgroundPaint(Color.WHITE);
         plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
         plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
 
+        NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
+        domainAxis.setRange(0, 480);
+        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        // Estilo para clientes en persona
-        renderer.setSeriesPaint(0, new Color(46, 134, 222)); // Azul
+        renderer.setSeriesPaint(0, new Color(46, 134, 222));
         renderer.setSeriesStroke(0, new BasicStroke(2f));
         renderer.setSeriesShape(0, new Ellipse2D.Double(-3, -3, 6, 6));
-        // Estilo para llamadas
-        renderer.setSeriesPaint(1, new Color(231, 76, 60)); // Rojo
-        renderer.setSeriesStroke(1, new BasicStroke(2f));
-        renderer.setSeriesShape(1, new Rectangle2D.Double(-3, -3, 6, 6));
 
         plot.setRenderer(renderer);
 
@@ -80,8 +77,48 @@ public class GraficosCombinados {
         return chartPanel;
     }
 
-    private JPanel crearPanelOcupacionEmpleado(double[] tiempos, int[] ocupacion) {
-        XYSeries serieOcupacion = new XYSeries("Estado del Empleado");
+    private JPanel crearPanelLlamadasEnCola(double[] tiempos, int[] llamadas) {
+        XYSeries serieLlamadas = new XYSeries("Llamadas");
+
+        for (int i = 0; i < tiempos.length; i++) {
+            serieLlamadas.add(tiempos[i], llamadas[i]);
+        }
+
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(serieLlamadas);
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Evolución de Llamadas en Cola",
+                "Tiempo (minutos)",
+                "Número de Llamadas",
+                dataset
+        );
+
+        XYPlot plot = chart.getXYPlot();
+        plot.setBackgroundPaint(Color.WHITE);
+        plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+        plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
+
+        NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
+        domainAxis.setRange(0, 480);
+        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+
+        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+        renderer.setSeriesPaint(0, new Color(231, 76, 60));
+        renderer.setSeriesStroke(0, new BasicStroke(2f));
+        renderer.setSeriesShape(0, new Rectangle2D.Double(-3, -3, 6, 6));
+
+        plot.setRenderer(renderer);
+
+        ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new Dimension(1150, 700));
+        return chartPanel;
+    }
+
+    private JPanel crearPanelOcupacionEmpleado(double[] tiempos, int[] ocupacion, String titulo) {
+        XYSeries serieOcupacion = new XYSeries("Estado del " + titulo);
 
         for (int i = 0; i < tiempos.length; i++) {
             serieOcupacion.add(tiempos[i], ocupacion[i]);
@@ -90,30 +127,25 @@ public class GraficosCombinados {
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(serieOcupacion);
 
-        JFreeChart chart = ChartFactory.createXYStepChart(
-                "Ocupación del Empleado en el Tiempo",
-                "Tiempo (minutos)",
-                "Estado (0=Libre, 1=Ocupado)",
-                dataset
-        );
+        NumberAxis domainAxis = new NumberAxis("Tiempo (minutos)");
+        domainAxis.setRange(0, 480);
+        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
-        // Personalización del gráfico
-        XYPlot plot = chart.getXYPlot();
+        NumberAxis rangeAxis = new NumberAxis("Estado (0=Libre, 1=Ocupado)");
+        rangeAxis.setRange(0, 1.1);
+        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+
+        XYStepRenderer renderer = new XYStepRenderer();
+        renderer.setSeriesPaint(0, titulo.equals("Empleado 1") ? new Color(39, 174, 96) : new Color(155, 89, 182));
+        renderer.setSeriesStroke(0, new BasicStroke(2f));
+        renderer.setSeriesShapesVisible(0, false);
+
+        XYPlot plot = new XYPlot(dataset, domainAxis, rangeAxis, renderer);
         plot.setBackgroundPaint(Color.WHITE);
         plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
         plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
 
-        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        renderer.setSeriesPaint(0, new Color(39, 174, 96)); // Verde
-        renderer.setSeriesStroke(0, new BasicStroke(2f));
-        renderer.setSeriesShapesVisible(0, false);
-
-        plot.setRenderer(renderer);
-
-        // Configurar eje Y para mostrar solo 0 y 1
-        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        rangeAxis.setRange(0, 1.1);
+        JFreeChart chart = new JFreeChart("Ocupación del " + titulo + " en el Tiempo", JFreeChart.DEFAULT_TITLE_FONT, plot, true);
 
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(1150, 700));
@@ -123,7 +155,6 @@ public class GraficosCombinados {
     private JPanel crearPanelHistogramas(double[] tiemposClientes, double[] tiemposLlamadas) {
         JPanel panel = new JPanel(new GridLayout(2, 1));
 
-        // Histograma para clientes en persona
         HistogramDataset datasetClientes = new HistogramDataset();
         datasetClientes.addSeries("Clientes en persona", tiemposClientes, 20);
 
@@ -136,7 +167,6 @@ public class GraficosCombinados {
                 true, true, false
         );
 
-        // Histograma para llamadas
         HistogramDataset datasetLlamadas = new HistogramDataset();
         datasetLlamadas.addSeries("Llamadas", tiemposLlamadas, 20);
 
@@ -149,9 +179,8 @@ public class GraficosCombinados {
                 true, true, false
         );
 
-        // Personalizar histogramas
-        styleHistogram(histClientes, new Color(46, 134, 222)); // Azul
-        styleHistogram(histLlamadas, new Color(231, 76, 60)); // Rojo
+        styleHistogram(histClientes, new Color(46, 134, 222));
+        styleHistogram(histLlamadas, new Color(231, 76, 60));
 
         panel.add(new ChartPanel(histClientes));
         panel.add(new ChartPanel(histLlamadas));
