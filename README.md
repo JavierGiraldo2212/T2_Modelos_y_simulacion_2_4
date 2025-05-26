@@ -66,19 +66,6 @@ El teatro cuenta con un **único empleado** que debe:
   - Llamadas telefónicas
 - **Porcentaje de ocupación del empleado**
 
-## Ejecución
-
-1. Clona el repositorio y asegúrate de tener Java instalado (Java 8 o superior).
-2. Compila el proyecto:
-   ```bash
-   javac SimulacionInicial/*.java SimLib/*.java
-    ```
-
-3. Ejecuta la simulación:
-
-   ```bash
-   java SimulacionInicial.Simulation
-   ```
 
 ## Ejemplo de salida
 
