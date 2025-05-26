@@ -1,3 +1,5 @@
+package SimLib;
+
 public class Random
 {
     private static final int MULT1 = 24112;

@@ -1,5 +1,7 @@
+package SimLib;
+
 class ListNode {
-    SimObject data; //The node holds a SimObject which holds data
+    SimObject data; //The node holds a SimLib.SimObject which holds data
     float index;  // I added this for method insertInOrder
     ListNode next;
 
@@ -150,5 +152,15 @@ public class List
             current = current.next;
         }
         System.out.println("\n");
+    }
+
+    public int size() {
+        int count = 0;
+        ListNode current = firstNode;
+        while (current != null) {
+            count++;
+            current = current.next;
+        }
+        return count;
     }
 }

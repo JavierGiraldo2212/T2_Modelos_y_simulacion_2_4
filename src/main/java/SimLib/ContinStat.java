@@ -1,3 +1,5 @@
+package SimLib;
+
 public class ContinStat
 {
     private float start;

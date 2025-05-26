@@ -1,3 +1,5 @@
+package SimLib;
+
 public class DiscreteStat
 {
     private float sum;

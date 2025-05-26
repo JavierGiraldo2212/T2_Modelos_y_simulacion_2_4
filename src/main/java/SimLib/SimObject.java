@@ -1,3 +1,5 @@
+package SimLib;
+
 public class SimObject
 // This is an object that holds data.  SimObjects are put into lists.
 

@@ -1,3 +1,5 @@
+package SimLib;
+
 public class EmptyListException extends RuntimeException
 {
     public EmptyListException(String name)
